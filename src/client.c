@@ -5,6 +5,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "client.h"
+
 #define PORT 5000
 #define SUCCESS_MESSAGE "Introduza uma nova palavra-passe"
 #define ERROR_MESSAGE   "Não se encontra dentro do sistema"
@@ -22,7 +24,7 @@ int main(int argc, char const *argv[]) {
     char *buffer = malloc(64);
     char *message = malloc(64);
 
-    // Create socket
+    // Cria socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
         return -1;
@@ -30,11 +32,12 @@ int main(int argc, char const *argv[]) {
 
     memset(&serv_addr, '0', sizeof(serv_addr));
 
+    // Verifica se existe porta
     if(argc != 1){
         get_params(argv);
     }
 
-    // Set the server address and port
+    // Faz set do endereço e da porta
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
 
@@ -43,31 +46,34 @@ int main(int argc, char const *argv[]) {
         return -1;
     }
 
-    // Connect to the server
+    // Conexão ao servidor
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         printf("\n Connection Failed \n");
         return -1;
     }
 
-    printf("Connected\nIntroduce your username:password\n");
+    printf("Connected\n");
 
-    // Read user input from terminal
+    // Lê input do terminal
     while (1) {
+        printf("Introduce your username:password\n");
         memset(message, 0, 64);
         gets(message, stdin);
         message[strcspn(message, "\n")] = '\0';
 
-        // Send user input to server
+        // Envia input para o servidor
         send(sock, message, strlen(message), 0);
 
-        // If the user enters "Over", end the connection
+        // Se o utilizador introduz Over então sai do ciclo
         if (strcmp(message, "Over\0") == 0) {
             break;
         }
-        // Receive response from server
+        // Recebe resposta do servidor
         memset(buffer, 0, 64);
         read(sock, buffer, 64);
         printf("%s\n", buffer);
+        
+        // Se for sucesso altera a palavra passe
         if(strcmp(buffer, SUCCESS_MESSAGE)){
             gets(message, stdin);
             message[strcspn(message, "\n")] = '\0';

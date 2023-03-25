@@ -18,16 +18,9 @@ char* handle_operation(char *username_password)
 {
     char* return_value = malloc(64);
     strcpy(return_value, username_password);
-    // Returns first token
+    // Retorna o primeiro token (username)
     char *token = strtok(username_password, ":");
-   
-    // Keep printing tokens while one of the
-    // delimiters present in str[].
-    while (token != NULL)
-    {
-        //printf(token + '\n');
-        token = strtok(NULL, "-");
-    }
+
     return return_value;
 }
 
@@ -49,17 +42,18 @@ int delete_line(char *filename, int line_number) {
     int count = 1;
     char buffer[512];
 
-    // open the input file in read mode and create a temporary file in write mode
+    // abre o ficheiro em modo read e cria um ficheiro temporário em modo write
     fp = fopen(filename, "r");
     temp = fopen("temp.txt", "w");
 
-    // check if files were opened successfully
+    // verifica se os ficheiros abriram corretamente
     if (fp == NULL || temp == NULL) {
         printf("Failed to open file %s\n", filename);
         return -1;
     }
 
-    // read the original file line by line and copy all lines to the temporary file except the line to be deleted
+    // lê do ficheiro original linha a linha e copia todas as linhas para o ficheiro temporário excetuando a linha
+    // a ser apagada
     while (fgets(buffer, 512, fp)) {
         if (count != line_number) {
             if(has_newline(buffer)){
@@ -71,11 +65,11 @@ int delete_line(char *filename, int line_number) {
         count++;
     }
 
-    // close both files
+    // fecha ambos os ficheiros
     fclose(fp);
     fclose(temp);
 
-    // delete the original file and rename the temporary file to the original file name
+    // apaga o ficheiro original e renomeia o ficheiro temporário para o nome do ficheiro original
     remove(filename);
     rename("temp.txt", filename);
 
@@ -89,19 +83,19 @@ int main(int argc, char const *argv[])
     char *buffer = malloc(64);
     char *password = malloc(64);
 
-    // Create server socket
+    // Cria um socket
     if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
         perror("Socket creation error");
         return -1;
     }
 
-    // get args from system.in
+    // Verifica se foi adicionado um porto
     if(argc != 1){
         get_params(argv);
     }
 
-    // Bind socket to address and port
+    // Faz bind do socket com o endereço e a porta
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = INADDR_ANY;
     server_address.sin_port = htons(port);
@@ -111,14 +105,14 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    // Listen for incoming connections
+    // Ouve por connexões
     if (listen(socket_fd, 3) < 0)
     {
         perror("Listen error");
         return -1;
     }
 
-    // Accept incoming connection
+    // Aceita por conexões
     int address_len = sizeof(client_address);
     if ((new_socket = accept(socket_fd, (struct sockaddr *)&client_address, (socklen_t *)&address_len)) < 0)
     {
@@ -128,23 +122,27 @@ int main(int argc, char const *argv[])
     FILE *file;
     
 
-    // Handle incoming messages from client
+    // Processa pedido das mensagens do cliente
     while (1)
     {
         memset(buffer, 0, 64);
         if((read_size = read(new_socket, buffer, 1024)) > 0){
+            // Se buffer igual a Over acaba o programa
             if (strcmp(buffer, "Over") == 0){
                 break;
             }
             printf("String recebida: %s\n",buffer);
 
+            // Abre ficheiro para leitura
             char str[124];
-            /* opening file for reading */
             file = fopen("output.txt", "r+");
             if(file == NULL) {
                 perror("Error opening file");
                 return(-1);
             }
+
+            // Se encontra uma linha igual ao buffer para e guarda o
+            // número da linha
             int has_found = 0;
             int line_number = 1;
             while(fgets (str, 124, file)) {
@@ -158,6 +156,9 @@ int main(int argc, char const *argv[])
             }
             fclose(file);
 
+            // Se existir um username:password envia mensagem de sucesso
+            // e espera por uma password nova
+            // Senão envia mensagem de erro
             if(has_found==1){
                 memset(password, 0, 1024);
                 send(new_socket, SUCCESS_MESSAGE, strlen(SUCCESS_MESSAGE), 0);
