@@ -1,0 +1,1 @@
+int get_params(char const *argv[]);
