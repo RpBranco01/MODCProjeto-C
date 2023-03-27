@@ -5,6 +5,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "client.h"
+
 #define PORT 5000
 #define SUCCESS_MESSAGE "Introduza uma nova palavra-passe"
 #define ERROR_MESSAGE   "Não se encontra dentro do sistema"
