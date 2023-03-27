@@ -17,4 +17,5 @@ $ ./bin/server <server_port>
 
 # Details:
 Have a format string vulnerability when we write to the file the new password
-Have a heap overflow when reading the input from socket
+Have a stack overflow when reading the input from socket
+Have a use after free of password variable if buffer length > 64

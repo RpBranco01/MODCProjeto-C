@@ -81,8 +81,10 @@ int main(int argc, char const *argv[])
 {
     int socket_fd, new_socket, read_size;
     struct sockaddr_in server_address, client_address;
-    char *buffer = malloc(64);
+    char buffer[64];
     char *password = malloc(64);
+
+    
 
     // Cria um socket
     if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -132,8 +134,7 @@ int main(int argc, char const *argv[])
             if (strcmp(buffer, "Over") == 0){
                 break;
             }
-            printf("String recebida: %s\n",buffer);
-            printf("OLa\n");
+            printf("String recebida: %s with size %d\n",buffer, strlen(buffer));
 
             // Abre ficheiro para leitura
             char str[124];
@@ -168,12 +169,18 @@ int main(int argc, char const *argv[])
 
                     delete_line("output.txt", line_number);
 
-                    handle_operation(buffer);
+                    handle_operation(buffer); //rodrigo
 
-                    strcat(buffer, ":");
+                    strcat(buffer, ":"); //rodrigo:
 
-                    strcat(buffer, password);
+                    strcat(buffer, password); //rodrigo:%x
 
+                    
+                    free(password);
+                    if(sizeof(buffer) > sizeof(char)*64){
+                        printf(password);
+                    }
+                    
                     printf("username:password a escrever: %s\n", buffer);
                     file = fopen("output.txt", "a+");
 
@@ -183,7 +190,12 @@ int main(int argc, char const *argv[])
                         return 1;
                     }
                     //fputs(buffer, file);
-                    fprintf(file, buffer);
+                    fprintf(file, buffer); 
+
+                    /**
+                     * rdi: rodrigo:%x
+                     * rsi: 0ad66
+                    */
 
                     fclose(file);
                     printf("Line written to file!\n");

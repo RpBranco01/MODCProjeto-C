@@ -21,8 +21,8 @@ void get_params(char const *argv[]){
 int main(int argc, char const *argv[]) {
     int sock = 0;
     struct sockaddr_in serv_addr;
-    char *buffer = malloc(64);
-    char *message = malloc(64);
+    char buffer[64];
+    char message[1024];
 
     // Cria socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -57,9 +57,10 @@ int main(int argc, char const *argv[]) {
 
     // Lê input do terminal
     while (1) {
-        memset(message, 0, 64);
+        memset(message, 0, 1024);
         gets(message, stdin);
         message[strcspn(message, "\n")] = '\0';
+        printf("Sending %s to server.\n", message);
 
         // Envia input para o servidor
         send(sock, message, strlen(message), 0);
