@@ -4,7 +4,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include "server.h"
 
 #define PORT 5000
 #define SUCCESS_MESSAGE "Introduza uma nova palavra-passe"
@@ -132,6 +131,7 @@ int main(int argc, char const *argv[])
                 break;
             }
             printf("String recebida: %s\n",buffer);
+            printf("OLa\n");
 
             // Abre ficheiro para leitura
             char str[124];

@@ -16,3 +16,9 @@ client: $(CLIENTE)
 
 %.o: src/%.c $($@)
 		$(CC) -I include -o $(OBJ_dir)/$@ -c $<
+
+CLEAN_OBJS = client.o server.o
+CLEAN_EXECS = bin/client bin/server		
+
+clean:
+	rm -f $(addprefix $(OBJ_DIR)/,$(CLEAN_OBJS)) lib/client-lib.o $(CLEAN_EXECS) *pb-c.[ch]
