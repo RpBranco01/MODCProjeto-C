@@ -20,3 +20,8 @@ int delete_line(char *filename, int line_number);
  * Dado a string verifica se esta possui um \\n
 */
 int has_newline(char *str);
+
+/**
+ * Loop para receber a agir aos pedidos do utilizador
+*/
+int server(int sock);
