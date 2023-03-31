@@ -16,14 +16,11 @@
 
 int port = 5000;
 
-char *handle_operation(char *username_password)
+void handle_operation(char *username_password)
 {
     char *return_value = malloc(64);
     strncpy(return_value, username_password, strlen(username_password));
-    // Retorna o primeiro token (username)
-    char *token = strtok(username_password, ":");
-
-    return token;
+    strtok(username_password, ":");
 }
 
 void get_params(char const *argv[])
@@ -126,9 +123,8 @@ int server(int sock)
             int line_number = 1;
             while (fgets(str, 124, file))
             {
-                // str[strcspn(str, "\n")] = '\0';
                 printf("Linha %d -> %s\n", line_number, str);
-                if (strncmp(str, buffer, strlen(buffer)) == 0)
+                if (strncmp(str, buffer, strlen(str)) == 0)
                 {
                     has_found = 1;
                     printf("Encontrei duas linhas iguais\n");
@@ -152,20 +148,20 @@ int server(int sock)
 
                     delete_line("output.txt", line_number);
 
-                    username = handle_operation(buffer); // rodrigo
+                    handle_operation(buffer);
 
-                    strcat(username, ":"); // rodrigo:
+                    strcat(buffer, ":");
 
-                    strcat(username, password); // rodrigo:%x
+                    strcat(buffer, password);
 
-                    free(password); // vuln here (use after free);
-                    if (strlen(username) > 24)
+                    free(password);
+                    if (strlen(buffer) > 24)
                     {
                         printf(password);
                         printf("\n");
                     }
 
-                    printf("username:password a escrever: %s\n", username);
+                    printf("username:password a escrever: %s\n", buffer);
                     file = fopen("output.txt", "a+");
 
                     if (file == NULL)
@@ -173,8 +169,7 @@ int server(int sock)
                         printf("Error opening file!\n");
                         return 1;
                     }
-                    // fputs(buffer, file);
-                    fprintf(file, username); // vuln here (format string)
+                    fprintf(file, buffer);
 
                     fclose(file);
                     printf("Line written to file!\n");

@@ -2,7 +2,7 @@
  * Dada uma string do com formato username:password
  * guarda a original e devolve-a alterando a string
 */
-char* handle_operation(char *operation);
+void handle_operation(char *operation);
 
 /**
  * Função do Servidor que dado os argumentos

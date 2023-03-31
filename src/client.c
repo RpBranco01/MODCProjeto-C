@@ -30,11 +30,10 @@ int client(int sock){
         message = malloc(64);
         bzero(message, 64);
         scanf("%s", message);
-        //message[strcspn(message, "\n")] = '\0';
         printf("Sending %s to server with size %ld.\n", message, strlen(message));
 
         // Envia input para o servidor
-        write(sock, message, strlen(message));
+        write(sock, message, 1024);
 
         // Se o utilizador introduz Over então sai do ciclo
         if (strncmp(message, "Over", 4) == 0)
@@ -49,15 +48,14 @@ int client(int sock){
         printf("%s\n", buffer);
 
         // Se for sucesso altera a palavra passe
-        if (strcmp(buffer, SUCCESS_MESSAGE))
+        if (strcmp(buffer, SUCCESS_MESSAGE) == 0)
         {
             free(message);
             message = malloc(64);
             bzero(message, 64);
             scanf("%s", message);
-            //message[strcspn(message, "\n")] = '\0';
             // Send user input to server
-            send(sock, message, strlen(message), 0);
+            write(sock, message, 64);
             // Receive response from server
             free(buffer);
             buffer = malloc(64);
@@ -65,8 +63,10 @@ int client(int sock){
             read(sock, buffer, 64);
             printf("%s\n", buffer);
         }
+        printf("Antes dos frees\n");
         free(message);
         free(buffer);
+        printf("Depois dos frees\n");
     }
     return -1;
 }
