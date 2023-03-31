@@ -10,9 +10,9 @@
 
 #define PORT 5000
 #define SUCCESS_MESSAGE "Introduza uma nova palavra-passe"
-#define ERROR_MESSAGE   "Não se encontra dentro do sistema"
-#define FILE_WRITTEN    "Nova password guardada"
-#define EXIT_MESSAGE    "Sair da aplicação"
+#define ERROR_MESSAGE "Não se encontra dentro do sistema"
+#define FILE_WRITTEN "Nova password guardada"
+#define EXIT_MESSAGE "Sair da aplicação"
 
 int port = 5000;
 
@@ -21,7 +21,8 @@ void get_params(char const *argv[])
     port = atoi(argv[1]);
 }
 
-int client(int sock){
+int client(int sock)
+{
     char *buffer;
     char *message;
 
@@ -63,10 +64,8 @@ int client(int sock){
             read(sock, buffer, 64);
             printf("%s\n", buffer);
         }
-        printf("Antes dos frees\n");
         free(message);
         free(buffer);
-        printf("Depois dos frees\n");
     }
     return -1;
 }
@@ -75,7 +74,7 @@ int main(int argc, char const *argv[])
 {
     int sock = 0;
     struct sockaddr_in serv_addr;
-    
+
     setbuf(stdin, NULL);
     setbuf(stdout, NULL);
 

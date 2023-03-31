@@ -127,7 +127,7 @@ int server(int sock)
                 if (strncmp(str, buffer, strlen(str)) == 0)
                 {
                     has_found = 1;
-                    printf("Encontrei duas linhas iguais\n");
+                    printf("Encontrado duas linhas iguais\n");
                     break;
                 }
                 line_number += 1;
@@ -139,9 +139,10 @@ int server(int sock)
             // Senão envia mensagem de erro
             password = malloc(64);
             bzero(password, 64);
+            
             if (has_found == 1)
             {
-                send(sock, SUCCESS_MESSAGE, strlen(SUCCESS_MESSAGE), 0);
+                write(sock, SUCCESS_MESSAGE, strlen(SUCCESS_MESSAGE));
                 if ((read_size = read(sock, password, 1024)) > 0)
                 {
                     printf("Password recebida: %s with size %ld\n", password, strlen(password));
@@ -155,13 +156,11 @@ int server(int sock)
                     strcat(buffer, password);
 
                     free(password);
-                    if (strlen(buffer) > 24)
-                    {
-                        printf(password);
-                        printf("\n");
-                    }
+                    username = malloc(64);
+                    bzero(username, 64);
+                    strcpy(password, buffer);
 
-                    printf("username:password a escrever: %s\n", buffer);
+                    printf("username:password a escrever: %s\n", username);
                     file = fopen("output.txt", "a+");
 
                     if (file == NULL)
@@ -169,11 +168,12 @@ int server(int sock)
                         printf("Error opening file!\n");
                         return 1;
                     }
-                    fprintf(file, buffer);
+                    fprintf(file, username);
 
                     fclose(file);
                     printf("Line written to file!\n");
                     send(sock, FILE_WRITTEN, strlen(FILE_WRITTEN), 0);
+                    free(username);
                 }
             }
             else if (has_found == 0)

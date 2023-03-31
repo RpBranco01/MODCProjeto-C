@@ -12,7 +12,7 @@ server: $(SERVER)
 		$(CC) $(addprefix $(OBJ_dir)/,$(SERVER)) -o bin/server -lrt 
 
 client: $(CLIENTE)
-		$(CC) $(addprefix $(OBJ_dir)/,$(CLIENTE)) -o  bin/client -lrt
+		$(CC) $(addprefix $(OBJ_dir)/,$(CLIENTE)) -o  bin/client -lrt 
 
 %.o: src/%.c $($@)
 		$(CC) -I include -o $(OBJ_dir)/$@ -c $<
